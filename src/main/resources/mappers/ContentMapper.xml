@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- user -->
+<mapper namespace="com.netease.comple.contentsale.dao.ContentDao">
+    <!-- 结果映射 -->
+    <resultMap id="contentMap" type="com.netease.comple.contentsale.entity.Content">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="seller_id" property="sellerId" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="summary" property="summary" jdbcType="VARCHAR"/>
+        <result column="conent" property="content" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <select id="getContentById" parameterType="int" resultMap="contentMap">
+        SELECT * FROM content WHERE id = #{contentId}
+    </select>
+
+    <select id="getAllContents" resultMap="contentMap">
+        SELECT * FROM content
+    </select>
+
+    <select id="getAllContentsBySellerId" parameterType="int" resultMap="contentMap">
+        SELECT * FROM content
+        WHERE seller_id = #{sellerId}
+    </select>
+
+    <select id="getAllBoughtContentsByBuyerId" parameterType="int" resultMap="contentMap">
+        SELECT * FROM content
+        WHERE (SELECT SUM(num) FROM trx WHERE buyer_id = #{buyerId} AND trx.content_id = content.id) > 0
+    </select>
+
+    <select id="getAllUnboughtContentsByBuyerId" parameterType="int" resultMap="contentMap">
+        SELECT * FROM content
+        WHERE content.id NOT IN (SELECT content_id FROM trx WHERE buyer_id = #{buyerId} AND num > 0)
+    </select>
+
+    <delete id="deleteContentById" parameterType="int">
+        DELETE FROM content WHERE id = #{contentId}
+    </delete>
+
+    <insert id="addContent" parameterType="com.netease.comple.contentsale.entity.Content" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO content(seller_id, price, title, summary, content, image) VALUE(#{sellerId}, #{price}, #{title}, #{summary}, #{content}, #{image})
+    </insert>
+
+    <update id="updateContent" parameterType="com.netease.comple.contentsale.entity.Content">
+        UPDATE content SET seller_id = #{sellerId},
+                            price = #{price},
+                            title = #{title},
+                            summary = #{summary},
+                            content = #{content},
+                            image = #{image} WHERE id = #{id}
+    </update>
+
+</mapper>
