@@ -25,6 +25,5 @@ url: jdbc:mysql://localhost:3306/contentsale
 配置文件:schema.sql
 ### 项目部署
 项目打包文件为 target/ROOT##2.war,部署时直接将该文件复制到Tomcat webapps，不需要对Tomcat默认配置进行修改。打包文件名保证项目路径为根路径，即访问路径为localhost:8080
-###Tips
-1、用户登录名、密码：buyer/reyub、seller/relles
-2、在线购物车内容会在session销毁时写入数据库，如果直接关闭Tomcat会导致购物车内容没有写回数据库。
+### Tip
+在线购物车内容会在session销毁时写入数据库，如果直接关闭Tomcat会导致购物车内容没有写回数据库。
